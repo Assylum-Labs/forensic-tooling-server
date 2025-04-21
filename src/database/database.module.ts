@@ -1,11 +1,9 @@
-import { Module } from '@nestjs/common';
+import { Module, OnModuleInit } from '@nestjs/common';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-// import { User } from 'src/users/models/user.model';
-// import { ApiKey } from 'src/auth/models/api-key.model';
-// import { Wallet } from 'src/kms/models/wallet.model';
-// import { TeeSession } from 'src/kms/models/tee-session.model';
-// import { KeyBackup } from 'src/kms/models/key-backup.model';
+import { EntitiesModule } from '../entities/entities.module';
+import { EntitySeeder } from './seeders/entity.seeder';
+import { Entity } from '../entities/models/entity.model';
 
 @Module({
   imports: [
@@ -18,29 +16,25 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
         port: configService.get('DB_PORT', 5432),
         username: configService.get('DB_USERNAME', 'postgres'),
         password: configService.get('DB_PASSWORD', 'postgres'),
-        database: configService.get('DB_NAME', 'solana_headless'),
+        database: configService.get('DB_NAME', 'solana_forensics'),
         autoLoadModels: true,
         synchronize: configService.get('NODE_ENV') !== 'production',
         logging: () => configService.get('NODE_ENV') !== 'production',
-        models: [
-        //   User,
-        //   ApiKey,
-        //   Wallet,
-        //   TeeSession,
-        //   KeyBackup
-        ],
+        models: [Entity],
         sync: {
-          alter: true,           // This is important for updating existing tables
-          force: false           // Keep false to avoid dropping tables
+          alter: true,
+          force: false
         },
-        // ssl: configService.get('DB_SSL', false)
-        //   ? {
-        //       require: true,
-        //       rejectUnauthorized: false,
-        //     }
-        //   : false,
       }),
     }),
+    EntitiesModule,
   ],
 })
-export class DatabaseModule {}
+export class DatabaseModule implements OnModuleInit {
+  constructor(private entitySeeder: EntitySeeder) {}
+
+  async onModuleInit() {
+    // Seed the database when the module initializes
+    await this.entitySeeder.seed();
+  }
+}
