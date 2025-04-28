@@ -19,7 +19,7 @@ export class Entity extends Model {
   name: string;
 
   @Column({
-    type: DataType.ENUM('exchange', 'nft_marketplace', 'defi_protocol', 'token', 'project', 'foundation'),
+    type: DataType.ENUM('exchange', 'nft_marketplace', 'defi_protocol', 'token', 'project', 'foundation', 'wallet'),
     allowNull: false,
   })
   type: 'exchange' | 'nft_marketplace' | 'defi_protocol' | 'token' | 'project' | 'foundation';
