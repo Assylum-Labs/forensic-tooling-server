@@ -22,7 +22,7 @@ export class Entity extends Model {
     type: DataType.ENUM('exchange', 'nft_marketplace', 'defi_protocol', 'token', 'project', 'foundation', 'wallet'),
     allowNull: false,
   })
-  type: 'exchange' | 'nft_marketplace' | 'defi_protocol' | 'token' | 'project' | 'foundation';
+  type: 'exchange' | 'nft_marketplace' | 'defi_protocol' | 'token' | 'project' | 'foundation' | 'program';
 
   @Column({
     type: DataType.STRING,
